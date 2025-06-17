@@ -4,6 +4,7 @@ export interface ItemTemplateProps {
     item: CountryItem,
     name: string,
     style?: Style,
+    disableFlags?: boolean,
     onPress?: (arg: any) => any,
 }
 

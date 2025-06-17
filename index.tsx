@@ -51,7 +51,7 @@ interface Props {
     popularCountries?: string[],
 
     style?: Style,
-
+    disableFlags?: boolean,
     show: boolean,
     enableModalAvoiding?: boolean,
     disableBackdrop?: boolean,
@@ -79,6 +79,7 @@ export const CountryPicker = ({
     searchMessage,
     lang = 'en',
     style,
+    disableFlags,
     enableModalAvoiding,
     androidWindowSoftInputMode,
     onBackdropPress,
@@ -200,6 +201,7 @@ export const CountryPicker = ({
 
         return (
             <ItemTemplate
+            disableFlags={disableFlags}
                 key={index}
                 item={item}
                 style={style}

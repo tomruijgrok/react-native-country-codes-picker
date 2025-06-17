@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, ViewStyle } from "react-native";
 import { ItemTemplateProps } from "../types/Types";
 
 
-export const CountryButton = ({ item, name, style, ...rest }: ItemTemplateProps) => (
+export const CountryButton = ({ item, name, style, disableFlags, ...rest }: ItemTemplateProps) => (
     <TouchableOpacity
         style={[styles.countryButton, style?.countryButtonStyles]}
         testID="countryCodesPickerCountryButton"
@@ -15,7 +15,7 @@ export const CountryButton = ({ item, name, style, ...rest }: ItemTemplateProps)
             },
             style?.flag
         ]}>
-            {item?.flag}
+            {disableFlags ? null : item?.flag}
         </Text>
         <Text style={[{
             flex: 0.3,
