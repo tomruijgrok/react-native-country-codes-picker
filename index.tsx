@@ -13,7 +13,7 @@ import {
     Modal,
     TextStyle
 } from 'react-native';
-import { CountryItem, ItemTemplateProps, Style, ListHeaderComponentProps } from "./types/Types";
+import { CountryItem, CountryPickerLabels, ItemTemplateProps, Style, ListHeaderComponentProps } from "./types/Types";
 import { useKeyboardStatus } from "./helpers/useKeyboardStatus";
 import { CountryButton } from "./components/CountryButton";
 import { countriesRemover } from "./helpers/countriesRemover";
@@ -21,7 +21,18 @@ import { removeDiacritics } from './helpers/diacriticsRemover';
 
 export { countryCodes } from './constants/countryCodes'
 export { CountryButton } from "./components/CountryButton";
-export type { CountryItem, ItemTemplateProps, Style, ListHeaderComponentProps } from "./types/Types";
+export type { CountryItem, CountryPickerLabels, ItemTemplateProps, Style, ListHeaderComponentProps } from "./types/Types";
+
+const resolveLabels = (props: {
+    labels?: CountryPickerLabels;
+    inputPlaceholder?: string;
+    searchMessage?: string;
+}): CountryPickerLabels => ({
+    inputPlaceholder:
+        props.labels?.inputPlaceholder ?? props.inputPlaceholder ?? '',
+    emptySearchMessage:
+        props.labels?.emptySearchMessage ?? props.searchMessage ?? '',
+});
 
 
 const height = Dimensions.get('window').height;
@@ -32,8 +43,9 @@ const height = Dimensions.get('window').height;
  * @param {?boolean} disableBackdrop Hide or show component by using this props
  * @param {?boolean} enableModalAvoiding Is modal should avoid keyboard ? On android to work required to use with androidWindowSoftInputMode with value pan, by default android will avoid keyboard by itself
  * @param {?string} androidWindowSoftInputMode Hide or show component by using this props
- * @param {?string} inputPlaceholder Text to showing in input
- * @param {?string} searchMessage Text to show user when no country to show
+ * @param {?string} inputPlaceholder Text to showing in input (use `labels` instead)
+ * @param {?string} searchMessage Text when no results (use `labels.emptySearchMessage` instead)
+ * @param {?CountryPickerLabels} labels Translatable UI strings
  * @param {?string} lang Current selected lang by user
  * @param {?string} initialState Here you should define initial dial code
  * @param {?array} excludedCountries Array of countries which should be excluded from picker
@@ -63,8 +75,10 @@ interface Props {
     onRequestClose?: (...args: any) => any,
 
     lang: string,
+    labels?: CountryPickerLabels,
     inputPlaceholder?: string,
     inputPlaceholderTextColor?: TextStyle['color'],
+    /** @deprecated Use `labels.emptySearchMessage` */
     searchMessage?: string,
     androidWindowSoftInputMode?: string,
     initialState?: string,
@@ -74,6 +88,7 @@ export const CountryPicker = ({
     show,
     popularCountries,
     pickerButtonOnPress,
+    labels,
     inputPlaceholder,
     inputPlaceholderTextColor,
     searchMessage,
@@ -99,6 +114,7 @@ export const CountryPicker = ({
     const animatedMargin = React.useRef(new Animated.Value(0)).current;
     const [searchValue, setSearchValue] = React.useState<string>(initialState || '');
     const [showModal, setShowModal] = React.useState<boolean>(false);
+    const resolvedLabels = resolveLabels({ labels, inputPlaceholder, searchMessage });
 
     React.useEffect(() => {
         if (show) {
@@ -273,7 +289,7 @@ export const CountryPicker = ({
                             style={[styles.searchBar, style?.textInput]}
                             value={searchValue}
                             onChangeText={setSearchValue}
-                            placeholder={inputPlaceholder || 'Search your country'}
+                            placeholder={resolvedLabels.inputPlaceholder}
                             placeholderTextColor={inputPlaceholderTextColor || '#8c8c8c'}
                             testID='countryCodesPickerSearchInput'
                             {...rest}
@@ -291,7 +307,7 @@ export const CountryPicker = ({
                                     style?.searchMessageText,
                                 ]}
                             >
-                                {searchMessage || 'Sorry we cant find your country :('}
+                                {resolvedLabels.emptySearchMessage}
                             </Text>
                         </View>
                     ) : (

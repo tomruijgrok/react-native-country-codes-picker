@@ -1,5 +1,12 @@
 import {ViewStyle, TextStyle} from "react-native";
 
+export interface CountryPickerLabels {
+    /** Placeholder text in the search field */
+    inputPlaceholder?: string;
+    /** Shown when the search returns no results */
+    emptySearchMessage?: string;
+}
+
 export interface ItemTemplateProps {
     item: CountryItem,
     name: string,
